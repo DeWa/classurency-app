@@ -1,0 +1,53 @@
+{
+  "name": "classurrency",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "start": "expo start",
+    "start:dev": "expo start --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web",
+    "typegen": "openapi-typescript docs/openapi.json -o src/types/api.generated.ts",
+    "test": "jest",
+    "test:e2e:ios": "detox test --configuration ios.sim.debug",
+    "test:e2e:android": "detox test --configuration android.emu.debug",
+    "prebuild": "expo prebuild"
+  },
+  "dependencies": {
+    "@expo-google-fonts/inter": "^0.4.2",
+    "@expo-google-fonts/space-mono": "^0.4.2",
+    "@react-navigation/bottom-tabs": "^7.15.8",
+    "@react-navigation/native": "^7.2.1",
+    "@react-navigation/native-stack": "^7.14.9",
+    "expo": "~55.0.9",
+    "expo-constants": "^55.0.9",
+    "expo-font": "~55.0.4",
+    "expo-linear-gradient": "~55.0.9",
+    "expo-linking": "^55.0.9",
+    "expo-secure-store": "^55.0.9",
+    "expo-status-bar": "~55.0.4",
+    "i18next": "^25.10.10",
+    "react": "19.2.0",
+    "react-i18next": "^17.0.0",
+    "react-native": "0.83.4",
+    "react-native-gesture-handler": "~2.30.0",
+    "react-native-safe-area-context": "^5.7.0",
+    "react-native-screens": "^4.24.0"
+  },
+  "devDependencies": {
+    "@babel/preset-typescript": "^7.28.5",
+    "@testing-library/react-native": "^13.3.3",
+    "@types/jest": "^30.0.0",
+    "@types/react": "~19.2.2",
+    "babel-preset-expo": "^55.0.13",
+    "detox": "^20.50.1",
+    "expo-dev-client": "^55.0.19",
+    "jest": "^30.3.0",
+    "openapi-typescript": "^7.13.0",
+    "react-test-renderer": "^19.2.0",
+    "ts-jest": "^29.4.6",
+    "typescript": "~5.9.2"
+  },
+  "private": true
+}
