@@ -1,0 +1,114 @@
+{
+  "appName": "Classurrency",
+  "login": {
+    "title": "Sign in",
+    "userName": "Username",
+    "password": "Password",
+    "showPassword": "Show",
+    "hidePassword": "Hide",
+    "submit": "Sign in",
+    "error": "Sign in failed"
+  },
+  "tabs": {
+    "home": "Home",
+    "transactions": "Activity",
+    "items": "Items",
+    "admin": "Admin",
+    "settings": "Settings"
+  },
+  "home": {
+    "welcome": "Welcome, {{name}}",
+    "role": "Role: {{role}}",
+    "balances": "Accounts",
+    "noAccounts": "No accounts yet.",
+    "providerNoId": "Your provider profile is not set up yet. Ask an admin to create an item provider for you."
+  },
+  "transactions": {
+    "title": "Transactions",
+    "noAccount": "You need an account to see activity. Create one under Admin or ask an administrator.",
+    "empty": "No transactions yet.",
+    "amount": "Amount",
+    "type": "Type",
+    "date": "Date",
+    "account": "Account",
+    "chooseAccount": "Choose account",
+    "balance": "Balance",
+    "locked": "Locked",
+    "accountId": "Account ID"
+  },
+  "settings": {
+    "title": "Settings",
+    "name": "Display name",
+    "password": "Password",
+    "type": "Account type",
+    "save": "Save",
+    "saved": "Saved",
+    "error": "Could not save"
+  },
+  "admin": {
+    "menu": "Administration",
+    "createUser": "Create user",
+    "createProvider": "Create item provider",
+    "createAccount": "Create account",
+    "mint": "Mint currency"
+  },
+  "createUser": {
+    "title": "Create user",
+    "name": "Display name",
+    "userName": "Username",
+    "submit": "Create",
+    "success": "User created. Password: {{password}}"
+  },
+  "userPicker": {
+    "placeholder": "Search by name or username…",
+    "noResults": "No users found.",
+    "needAuth": "Sign in to search users."
+  },
+  "accountPicker": {
+    "placeholder": "Search by owner name, username, or card UID…",
+    "noResults": "No accounts found.",
+    "needAuth": "Sign in to search accounts.",
+    "locked": "Locked",
+    "unlocked": "Unlocked",
+    "selectOwnerFirst": "Select a user first"
+  },
+  "createProvider": {
+    "title": "Create item provider",
+    "name": "Provider name",
+    "userId": "User",
+    "accountId": "Account",
+    "submit": "Create"
+  },
+  "createAccount": {
+    "title": "Create account",
+    "userId": "User",
+    "submit": "Create",
+    "success": "Account created for user."
+  },
+  "mint": {
+    "title": "Mint",
+    "adminUserAccountId": "Your account to mint from",
+    "accountId": "Target account",
+    "amount": "Amount",
+    "description": "Description (optional)",
+    "submit": "Mint",
+    "balanceAfter": "New balance: {{balance}}"
+  },
+  "items": {
+    "title": "Provider items",
+    "empty": "No items. Add one below.",
+    "add": "Add item",
+    "name": "Name",
+    "description": "Description",
+    "value": "Price",
+    "stock": "Stock (optional)",
+    "create": "Create item",
+    "noProvider": "No provider is linked to your account yet."
+  },
+  "common": {
+    "loading": "Loading…",
+    "logout": "Log out",
+    "retry": "Retry",
+    "cancel": "Cancel"
+  }
+}

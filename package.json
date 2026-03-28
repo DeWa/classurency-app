@@ -15,6 +15,7 @@
     "prebuild": "expo prebuild"
   },
   "dependencies": {
+    "@expo/vector-icons": "^15.0.2",
     "@expo-google-fonts/inter": "^0.4.2",
     "@expo-google-fonts/space-mono": "^0.4.2",
     "@react-navigation/bottom-tabs": "^7.15.8",
