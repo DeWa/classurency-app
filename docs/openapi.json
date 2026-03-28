@@ -1,0 +1,1536 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1": {
+      "get": {
+        "description": "Simple endpoint to verify the API is running.",
+        "operationId": "AppController_getHello_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Greeting string",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Hello World!"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Health / hello",
+        "tags": ["App"]
+      }
+    },
+    "/api/v1/users": {
+      "post": {
+        "description": "Create a new user with the given information. Only admin can create users",
+        "operationId": "UsersController_createUser_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateUserResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new user",
+        "tags": ["Users"]
+      },
+      "get": {
+        "description": "Returns a paginated list of users. Admins may filter by type and by a case-insensitive search on name or userName.",
+        "operationId": "UsersController_listUsers_v1",
+        "parameters": [
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "Return only users of this type.",
+            "schema": {
+              "type": "string",
+              "enum": ["user", "provider", "admin"]
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Case-insensitive substring match on display name or login name (userName).",
+            "schema": {
+              "maxLength": 128,
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Page size (default 50, max 100).",
+            "schema": {
+              "default": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of rows to skip (pagination).",
+            "schema": {
+              "default": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Users retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListUsersResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List users",
+        "tags": ["Users"]
+      }
+    },
+    "/api/v1/users/{id}": {
+      "patch": {
+        "description": "Update a user with the given information",
+        "operationId": "UsersController_updateUser_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User ID",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateUserResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a user",
+        "tags": ["Users"]
+      },
+      "get": {
+        "description": "Get a user with the given ID",
+        "operationId": "UsersController_getUser_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User ID",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "includeAccounts",
+            "required": false,
+            "in": "query",
+            "description": "When true, includes each account id, balance, lock state, public key, and NFC UID (no secrets).",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get a user",
+        "tags": ["Users"]
+      }
+    },
+    "/api/v1/users/me": {
+      "get": {
+        "description": "Get the current user",
+        "operationId": "UsersController_getCurrentUser_v1",
+        "parameters": [
+          {
+            "name": "includeAccounts",
+            "required": false,
+            "in": "query",
+            "description": "When true, includes each account id, balance, lock state, public key, and NFC UID (no secrets).",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get the current user",
+        "tags": ["Users"]
+      }
+    },
+    "/api/v1/tokens": {
+      "post": {
+        "description": "Issues a new JWT for the given user (subject to caller privilege).",
+        "operationId": "ApiTokensController_createApiToken_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestTokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Token issued",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestTokenResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Request API token",
+        "tags": ["Tokens"]
+      }
+    },
+    "/api/v1/item-providers": {
+      "post": {
+        "description": "Admin creates an item provider for a user account.",
+        "operationId": "ItemProvidersController_createItemProvider_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateItemProviderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Item provider created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemProviderResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create item provider",
+        "tags": ["Item Providers"]
+      }
+    },
+    "/api/v1/transactions/transfer": {
+      "post": {
+        "description": "Transfer funds from the authenticated user’s NFC-backed account to a recipient account.",
+        "operationId": "TransactionsController_transfer_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Transaction created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Transfer funds",
+        "tags": ["Transactions"]
+      }
+    },
+    "/api/v1/transactions/purchase-item": {
+      "post": {
+        "description": "Authenticates with the NFC card and purchases items from a provider account.",
+        "operationId": "TransactionsController_purchaseItem_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PurchaseItemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Purchase completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseItemResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Purchase items",
+        "tags": ["Transactions"]
+      }
+    },
+    "/api/v1/accounts": {
+      "post": {
+        "description": "Creates an NFC-backed account for a user. Requires an admin API token.",
+        "operationId": "AccountsController_createAccount_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAccountDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Account created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAccountResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create account",
+        "tags": ["Accounts"]
+      },
+      "get": {
+        "description": "Returns a paginated list of accounts with each account owner (user) summary. Admins may filter by owner user id, owner user type, lock state, and a case-insensitive search on NFC UID or owner name fields.",
+        "operationId": "AccountsController_listAccounts_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "description": "Return only accounts owned by this user.",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "ownerType",
+            "required": false,
+            "in": "query",
+            "description": "Return only accounts whose owner has this user type.",
+            "schema": {
+              "type": "string",
+              "enum": ["user", "provider", "admin"]
+            }
+          },
+          {
+            "name": "isLocked",
+            "required": false,
+            "in": "query",
+            "description": "Return only locked (true) or unlocked (false) accounts.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Case-insensitive substring match on NFC card UID, owner display name, or owner login name (userName).",
+            "schema": {
+              "maxLength": 128,
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Page size (default 50, max 100).",
+            "schema": {
+              "default": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of rows to skip (pagination).",
+            "schema": {
+              "default": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Accounts retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListAccountsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List accounts",
+        "tags": ["Accounts"]
+      }
+    },
+    "/api/v1/accounts/{accountId}/transactions": {
+      "get": {
+        "description": "Returns transactions where the account is the payer, payee, or mint recipient. The account owner or an admin may call this.",
+        "operationId": "AccountsController_getAccountTransactions_v1",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "description": "Account ID",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "How many transactions to return (default 10, max 100).",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transactions retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TransactionResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Caller is not the account owner or an admin"
+          },
+          "404": {
+            "description": "Account not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List account transactions",
+        "tags": ["Accounts"]
+      }
+    },
+    "/api/v1/item-providers/{providerId}/items": {
+      "post": {
+        "description": "Creates an item for an item-provider owned by the caller.",
+        "operationId": "ItemsController_createProviderItem_v1",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "path",
+            "description": "Provider ID",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProviderItemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Item created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create provider item",
+        "tags": ["Items"]
+      },
+      "get": {
+        "description": "Lists items for an item-provider owned by the caller.",
+        "operationId": "ItemsController_listProviderItems_v1",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "path",
+            "description": "Provider ID",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Items retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List provider items",
+        "tags": ["Items"]
+      }
+    },
+    "/api/v1/item-providers/{providerId}/items/{itemId}": {
+      "get": {
+        "description": "Gets one item by id for an item-provider owned by the caller.",
+        "operationId": "ItemsController_getProviderItem_v1",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "path",
+            "description": "Provider ID",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "itemId",
+            "required": true,
+            "in": "path",
+            "description": "Item ID",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Item retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get provider item",
+        "tags": ["Items"]
+      }
+    },
+    "/api/v1/admin/mint": {
+      "post": {
+        "description": "Increases an account balance and records a mint transaction on the chain.",
+        "operationId": "AdminController_mint_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MintDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Mint applied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MintResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Mint currency",
+        "tags": ["Admin"]
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "description": "Login with the given username and password",
+        "operationId": "AuthController_login_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        },
+        "summary": "Login",
+        "tags": ["Auth"]
+      }
+    }
+  },
+  "info": {
+    "title": "Classurency API",
+    "description": "API documentation for the Classurency backend.",
+    "version": "0.0.1",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "token",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Ada Lovelace",
+            "maxLength": 128,
+            "description": "User display name."
+          },
+          "userName": {
+            "type": "string",
+            "description": "User username (letters, digits, - _ + only; no spaces)",
+            "maxLength": 128,
+            "pattern": "^[-a-zA-Z0-9_+]+$"
+          }
+        },
+        "required": ["name", "userName"]
+      },
+      "CreateUserResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "User ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "User name"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password"
+          },
+          "type": {
+            "type": "string",
+            "description": "User type"
+          }
+        },
+        "required": ["id", "name", "password", "type"]
+      },
+      "ListUserItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["user", "provider", "admin"]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": ["id", "name", "userName", "type", "createdAt", "updatedAt"]
+      },
+      "ListUsersResponseDto": {
+        "type": "object",
+        "properties": {
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ListUserItemDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Total rows matching the filters (ignoring limit/offset)."
+          }
+        },
+        "required": ["users", "total"]
+      },
+      "UpdateUserRequestDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Ada Lovelace",
+            "maxLength": 128,
+            "description": "User display name."
+          },
+          "password": {
+            "type": "string",
+            "example": "a-long-random-secret",
+            "minLength": 6,
+            "maxLength": 128,
+            "description": "Account password for API login (stored with Argon2id; distinct from the generated card PIN)."
+          },
+          "type": {
+            "type": "string",
+            "example": "admin",
+            "enum": ["user", "provider", "admin"],
+            "description": "User type."
+          }
+        },
+        "required": ["name", "password", "type"]
+      },
+      "UpdateUserResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "User ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "User name"
+          },
+          "type": {
+            "type": "string",
+            "description": "User type"
+          }
+        },
+        "required": ["id", "name", "type"]
+      },
+      "UserAccountSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nfcCardUid": {
+            "type": "object",
+            "nullable": true,
+            "description": "NFC card UID when the account is bound to a card."
+          },
+          "publicKeyHex": {
+            "type": "string",
+            "description": "Account public key (hex)."
+          },
+          "balance": {
+            "type": "number",
+            "description": "Current balance."
+          },
+          "isLocked": {
+            "type": "boolean",
+            "description": "Whether the account is locked."
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "nfcCardUid",
+          "publicKeyHex",
+          "balance",
+          "isLocked",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "GetUserResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "User ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "User name"
+          },
+          "type": {
+            "type": "string",
+            "description": "User type"
+          },
+          "providerId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Item provider id when the user type is provider and an item provider exists."
+          },
+          "accounts": {
+            "description": "Included when the request uses includeAccounts=true.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserAccountSummaryDto"
+            }
+          }
+        },
+        "required": ["id", "name", "type"]
+      },
+      "RequestTokenDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "format": "uuid",
+            "description": "Target user id."
+          },
+          "privilege": {
+            "type": "string",
+            "example": "provider",
+            "enum": ["admin", "provider", "user"],
+            "description": "Requested privilege for the issued token (defaults to user)."
+          }
+        },
+        "required": ["userId"]
+      },
+      "RequestTokenResponseDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjM0NTY3ODkwIiwidXNlclR5cGUiOiJ1c2VyIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+            "description": "JWT token."
+          }
+        },
+        "required": ["token"]
+      },
+      "CreateItemProviderDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Main shop counter"
+          },
+          "userId": {
+            "type": "string",
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "description": "The user that owns this provider."
+          },
+          "accountId": {
+            "type": "string",
+            "example": "9c7bb5eb-1684-49b2-bf1d-7f8ec8f0b6a4",
+            "description": "Account to receive funds for this provider. Must belong to userId."
+          }
+        },
+        "required": ["name", "userId", "accountId"]
+      },
+      "ItemProviderResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Item-provider ID",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name"
+          },
+          "userId": {
+            "type": "string",
+            "description": "Owning user ID",
+            "format": "uuid"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "Linked account ID",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Creation timestamp"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Last update timestamp"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "userId",
+          "accountId",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "TransferDto": {
+        "type": "object",
+        "properties": {
+          "nfcCardUid": {
+            "type": "string",
+            "example": "04A224B1C83A80",
+            "maxLength": 128,
+            "description": "NFC card UID (as read from the card reader)."
+          },
+          "toAccountId": {
+            "type": "string",
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "format": "uuid",
+            "description": "Recipient account id (bank, vending machine, or another account)."
+          },
+          "value": {
+            "type": "number",
+            "example": 2.5,
+            "minimum": 0.01,
+            "description": "Value of the transfer in currency units."
+          },
+          "description": {
+            "type": "string",
+            "example": "Cafeteria lunch",
+            "maxLength": 500,
+            "description": "Optional purchase description."
+          },
+          "pin": {
+            "type": "string",
+            "example": "1234",
+            "minLength": 4,
+            "maxLength": 4,
+            "description": "4-digit PIN set on the card."
+          },
+          "encryptedPrivateKeyFromCard": {
+            "type": "string",
+            "example": "BASE64_ENCRYPTED_PRIVATE_KEY_FROM_CARD==",
+            "description": "Encrypted private key blob read from the NFC card (base64 string)."
+          }
+        },
+        "required": [
+          "nfcCardUid",
+          "toAccountId",
+          "value",
+          "pin",
+          "encryptedPrivateKeyFromCard"
+        ]
+      },
+      "TransactionResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Transaction ID"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["MINT", "PURCHASE"],
+            "description": "Transaction kind"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Transaction amount"
+          },
+          "description": {
+            "type": "object",
+            "description": "Description",
+            "nullable": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Creation timestamp"
+          },
+          "fromAccountId": {
+            "type": "object",
+            "description": "Source account ID (payer); null when not applicable (e.g. mint)",
+            "nullable": true
+          },
+          "toAccountId": {
+            "type": "object",
+            "description": "Destination account ID",
+            "nullable": true
+          }
+        },
+        "required": ["id", "type", "amount", "createdAt"]
+      },
+      "PurchaseItemDto": {
+        "type": "object",
+        "properties": {
+          "pin": {
+            "type": "string",
+            "example": "1234",
+            "minLength": 4,
+            "maxLength": 4,
+            "description": "4-digit PIN set on the card."
+          },
+          "encryptedPrivateKeyFromCard": {
+            "type": "string",
+            "example": "BASE64_ENCRYPTED_PRIVATE_KEY_FROM_CARD==",
+            "description": "Encrypted private key blob read from the NFC card (base64 string)."
+          },
+          "providerAccountId": {
+            "type": "string",
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "format": "uuid",
+            "description": "Provider account id (vending machine, cafeteria, etc.) that sells the item."
+          },
+          "description": {
+            "type": "string",
+            "example": "Cafeteria lunch",
+            "maxLength": 500,
+            "description": "Optional purchase description."
+          },
+          "items": {
+            "description": "Item ids (UUIDs) to purchase",
+            "example": ["3fa85f64-5717-4562-b3fc-2c963f66afa6"],
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "a"
+              },
+              "format": "uuid"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "pin",
+          "encryptedPrivateKeyFromCard",
+          "providerAccountId",
+          "items"
+        ]
+      },
+      "PurchaseItemResponseDto": {
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "number",
+            "description": "Created purchase transaction id"
+          },
+          "remainingAmount": {
+            "type": "object",
+            "description": "Remaining stock per item id after the purchase (when stock is tracked).",
+            "additionalProperties": {
+              "type": "number"
+            },
+            "example": {
+              "3fa85f64-5717-4562-b3fc-2c963f66afa6": 9
+            }
+          }
+        },
+        "required": ["transactionId", "remainingAmount"]
+      },
+      "CreateAccountDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "format": "uuid",
+            "description": "User id."
+          }
+        },
+        "required": ["userId"]
+      },
+      "CreateAccountResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "User ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "User display name"
+          },
+          "nfcCardUid": {
+            "type": "string",
+            "description": "NFC card UID assigned to the account"
+          },
+          "publicKeyHex": {
+            "type": "string",
+            "description": "Account public key (hex)"
+          },
+          "pin": {
+            "type": "string",
+            "description": "4-digit PIN for the NFC card"
+          },
+          "encryptedPrivateKeyForCard": {
+            "type": "string",
+            "description": "Encrypted private key for programming onto the card (one-time delivery)."
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "nfcCardUid",
+          "publicKeyHex",
+          "pin",
+          "encryptedPrivateKeyForCard"
+        ]
+      },
+      "AccountListOwnerDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["user", "provider", "admin"]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": ["id", "name", "userName", "type", "createdAt", "updatedAt"]
+      },
+      "ListAccountItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nfcCardUid": {
+            "type": "object",
+            "nullable": true,
+            "description": "NFC card UID when assigned."
+          },
+          "publicKeyHex": {
+            "type": "string"
+          },
+          "balance": {
+            "type": "number",
+            "description": "Account balance."
+          },
+          "isLocked": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "owner": {
+            "description": "The user that owns this account.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AccountListOwnerDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "publicKeyHex",
+          "balance",
+          "isLocked",
+          "createdAt",
+          "updatedAt",
+          "owner"
+        ]
+      },
+      "ListAccountsResponseDto": {
+        "type": "object",
+        "properties": {
+          "accounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ListAccountItemDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Total rows matching the filters (ignoring limit/offset)."
+          }
+        },
+        "required": ["accounts", "total"]
+      },
+      "CreateProviderItemDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Soda can"
+          },
+          "description": {
+            "type": "string",
+            "example": "330ml soda"
+          },
+          "value": {
+            "type": "number",
+            "example": 1.5,
+            "description": "Price in currency units."
+          },
+          "amount": {
+            "type": "number",
+            "example": 10,
+            "description": "If omitted/null, stock is not tracked (unlimited).",
+            "nullable": true
+          }
+        },
+        "required": ["name", "description", "value"]
+      },
+      "ItemResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Item ID",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description"
+          },
+          "value": {
+            "type": "number",
+            "description": "Unit value"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Stock amount; null means unlimited / not tracked",
+            "nullable": true
+          },
+          "providerId": {
+            "type": "string",
+            "description": "Owning item-provider ID",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Creation timestamp"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Last update timestamp"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "value",
+          "amount",
+          "providerId",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "MintDto": {
+        "type": "object",
+        "properties": {
+          "adminUserAccountId": {
+            "type": "string",
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "format": "uuid",
+            "description": "Admin user account id."
+          },
+          "accountId": {
+            "type": "string",
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "format": "uuid",
+            "description": "Target account id."
+          },
+          "amount": {
+            "type": "number",
+            "example": 10,
+            "minimum": 0.01,
+            "description": "Amount to mint."
+          },
+          "description": {
+            "type": "string",
+            "example": "Initial top-up",
+            "maxLength": 500,
+            "description": "Optional mint description."
+          }
+        },
+        "required": ["adminUserAccountId", "accountId", "amount"]
+      },
+      "MintResponseDto": {
+        "type": "object",
+        "properties": {
+          "balance": {
+            "type": "string",
+            "example": "100.00",
+            "description": "Account balance after mint (decimal string)."
+          }
+        },
+        "required": ["balance"]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "userName": {
+            "type": "string",
+            "example": "alice_2",
+            "description": "User username (letters, digits, - _ + only; no spaces)",
+            "maxLength": 128,
+            "pattern": "^[-a-zA-Z0-9_+]+$"
+          },
+          "password": {
+            "type": "string",
+            "example": "a-long-random-secret",
+            "minLength": 6,
+            "maxLength": 128,
+            "description": "Account password for API login (Distinct from the generated card PIN)."
+          }
+        },
+        "required": ["userName", "password"]
+      },
+      "LoginResponseDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjM0NTY3ODkwIiwidXNlclR5cGUiOiJ1c2VyIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+            "description": "JWT token"
+          }
+        },
+        "required": ["token"]
+      }
+    }
+  }
+}
